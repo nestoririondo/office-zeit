@@ -1,5 +1,5 @@
-FROM node:22-alpine AS builder
-RUN apk add --no-cache openssl
+FROM node:22-slim AS builder
+RUN apt-get update && apt-get install -y openssl && rm -rf /var/lib/apt/lists/*
 WORKDIR /app
 
 COPY package*.json ./
@@ -14,8 +14,8 @@ RUN npm run build
 RUN cp -r node_modules/.prisma .next/standalone/node_modules/.prisma
 RUN cp -r node_modules/@prisma .next/standalone/node_modules/@prisma
 
-FROM node:22-alpine AS runner
-RUN apk add --no-cache openssl
+FROM node:22-slim AS runner
+RUN apt-get update && apt-get install -y openssl && rm -rf /var/lib/apt/lists/*
 WORKDIR /app
 
 COPY --from=builder /app/.next/standalone ./
