@@ -10,6 +10,9 @@ RUN npx prisma generate
 COPY . .
 RUN npm run build
 
+RUN cp -r node_modules/.prisma .next/standalone/node_modules/.prisma
+RUN cp -r node_modules/@prisma .next/standalone/node_modules/@prisma
+
 FROM node:22-alpine AS runner
 WORKDIR /app
 
@@ -17,8 +20,6 @@ COPY --from=builder /app/.next/standalone ./
 COPY --from=builder /app/.next/static ./.next/static
 COPY --from=builder /app/public ./public
 COPY --from=builder /app/prisma ./prisma
-COPY --from=builder /app/node_modules/.prisma ./node_modules/.prisma
-COPY --from=builder /app/node_modules/@prisma ./node_modules/@prisma
 COPY --from=builder /app/node_modules/prisma ./node_modules/prisma
 
 COPY start.sh ./
