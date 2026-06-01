@@ -23,3 +23,17 @@ export async function setIdentity(formData: FormData) {
 
   redirect("/")
 }
+
+export async function updateColor(formData: FormData) {
+  const color = formData.get("color") as string
+  const cookieStore = await cookies()
+  const person = cookieStore.get("officeZeitPerson")?.value
+  if (!person || !color) return
+
+  await prisma.person.update({
+    where: { name: person },
+    data: { color },
+  })
+
+  redirect("/")
+}
