@@ -14,6 +14,7 @@ RUN cp -r node_modules/.prisma .next/standalone/node_modules/.prisma
 RUN cp -r node_modules/@prisma .next/standalone/node_modules/@prisma
 
 FROM node:22-alpine AS runner
+RUN apk add --no-cache openssl
 WORKDIR /app
 
 COPY --from=builder /app/.next/standalone ./
