@@ -14,7 +14,7 @@ const geistMono = Geist_Mono({
 
 export const metadata: Metadata = {
   title: "Wann bist du im Office?",
-  description: "Büropräsenz für die Woche eintragen",
+  description: "Wer ist wann im Office? Eine einfache Übersicht für das Team.",
 };
 
 export default function RootLayout({

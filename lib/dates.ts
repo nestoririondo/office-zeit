@@ -3,6 +3,15 @@ const DAY_LABELS = ["Mo", "Di", "Mi", "Do", "Fr"]
 export type WeekDay = {
   label: string
   date: string
+  displayDate: string
+}
+
+const MONTH_NAMES = ["Jan", "Feb", "Mär", "Apr", "Mai", "Jun", "Jul", "Aug", "Sep", "Okt", "Nov", "Dez"]
+
+function toDisplayDate(date: Date): string {
+  const day = String(date.getDate()).padStart(2, "0")
+  const month = MONTH_NAMES[date.getMonth()]
+  return `${day} ${month}`
 }
 
 function getMondayOf(date: Date): Date {
@@ -29,7 +38,7 @@ export function getWeekDays(offsetWeeks: number = 0): WeekDay[] {
   return DAY_LABELS.map((label, i) => {
     const d = new Date(monday)
     d.setDate(monday.getDate() + i)
-    return { label, date: toISODate(d) }
+    return { label, date: toISODate(d), displayDate: toDisplayDate(d) }
   })
 }
 

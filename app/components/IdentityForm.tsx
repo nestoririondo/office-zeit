@@ -60,7 +60,6 @@ export default function IdentityForm({ person, currentColor }: Props) {
           )}
 
           <div className="flex flex-col gap-2">
-            <span className="font-mono text-sm">Deine Farbe</span>
             <div className="flex gap-2 flex-wrap">
               {COLORS.map((color) => (
                 <button

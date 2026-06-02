@@ -27,7 +27,7 @@ export default function DayCard({ day, presences, currentPerson, colorMap }: Pro
         }`}
       >
         <div className="font-mono font-bold text-lg">{day.label}</div>
-        <div className="font-mono text-sm text-gray-500 dark:text-gray-400">{day.date}</div>
+        <div className="font-mono text-sm text-gray-500 dark:text-gray-400">{day.displayDate}</div>
 
         <div className="flex flex-wrap gap-1 mt-2 flex-1">
           {presences.map(({ person, withDog }) => (
