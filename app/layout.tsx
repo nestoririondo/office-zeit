@@ -15,6 +15,9 @@ const geistMono = Geist_Mono({
 export const metadata: Metadata = {
   title: "Wann bist du im Office?",
   description: "Wer ist wann im Office? Eine einfache Übersicht für das Team.",
+  icons: {
+    icon: "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🐶</text></svg>",
+  },
 };
 
 export default function RootLayout({
