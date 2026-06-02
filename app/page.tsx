@@ -4,7 +4,6 @@ import NamePicker from "./components/NamePicker"
 import WeekView from "./components/WeekView"
 import WeekTabs from "./components/WeekTabs"
 import Polling from "./components/Polling"
-import { getDefaultWeekOffset } from "../lib/dates"
 import { prisma } from "../lib/prisma"
 
 type Props = {
@@ -20,9 +19,7 @@ export default async function Home({ searchParams }: Props) {
   }
 
   const params = await searchParams
-  const weekOffset = params.week !== undefined
-    ? parseInt(params.week)
-    : getDefaultWeekOffset()
+  const weekOffset = params.week !== undefined ? parseInt(params.week) : 0
 
   const personData = await prisma.person.findUnique({ where: { name: person } })
 

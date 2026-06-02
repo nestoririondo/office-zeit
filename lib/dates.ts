@@ -41,7 +41,3 @@ export function getWeekDays(offsetWeeks: number = 0): WeekDay[] {
     return { label, date: toISODate(d), displayDate: toDisplayDate(d) }
   })
 }
-
-export function getDefaultWeekOffset(): number {
-  return new Date().getDay() === 0 ? 1 : 0
-}
