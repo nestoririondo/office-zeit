@@ -34,11 +34,21 @@ export async function GET(request: Request) {
     return Array.from(map.entries()).map(([person, days]) => ({ person, days }))
   }
 
+  const lastWeekPresences = groupByPerson(lastWeekDays)
+  const names = lastWeekPresences.map((p) => p.person)
+  const lastWeekSummary =
+    names.length === 0
+      ? "Niemand"
+      : names.length === 1
+        ? names[0]
+        : `${names.slice(0, -1).join(", ")} und ${names[names.length - 1]}`
+
   return NextResponse.json({
+    lastWeekSummary,
     lastWeek: {
       from: lastWeekDays[0].date,
       to: lastWeekDays[4].date,
-      presences: groupByPerson(lastWeekDays),
+      presences: lastWeekPresences,
     },
     thisWeek: {
       from: thisWeekDays[0].date,
