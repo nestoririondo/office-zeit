@@ -4,10 +4,7 @@ services:
     ports:
       - "3000:3000"
     volumes:
-      - office-zeit-data:/app/data
+      - /var/lib/office-zeit/data:/app/data
     environment:
       - DATABASE_URL=file:/app/data/prod.db
     restart: unless-stopped
-
-volumes:
-  office-zeit-data:
