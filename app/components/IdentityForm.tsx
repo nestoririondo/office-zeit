@@ -41,13 +41,25 @@ export default function IdentityForm({ person, currentColor }: Props) {
           {isExisting ? "Farbe ändern" : "Wer bist du?"}
         </h1>
 
-        <form action={isExisting ? updateColor : setIdentity} className="flex flex-col gap-5">
-          {isExisting ? (
+        {isExisting && (
+          <div className="flex items-center justify-between">
             <div>
               <p className="font-mono text-sm text-gray-500 dark:text-gray-400">Eingeloggt als</p>
               <p className="font-mono font-bold text-lg">{person}</p>
             </div>
-          ) : (
+            <form action={clearIdentity}>
+              <button
+                type="submit"
+                className="font-mono text-xs text-red-400 border border-red-400 px-2 py-0.5 hover:bg-red-400 hover:text-white transition-colors cursor-pointer"
+              >
+                Abmelden
+              </button>
+            </form>
+          </div>
+        )}
+
+        <form action={isExisting ? updateColor : setIdentity} className="flex flex-col gap-5">
+          {!isExisting && (
             <input
               type="text"
               name="person"
@@ -94,16 +106,6 @@ export default function IdentityForm({ person, currentColor }: Props) {
           </button>
         </form>
 
-        {isExisting && (
-          <form action={clearIdentity}>
-            <button
-              type="submit"
-              className="font-mono text-sm text-gray-500 dark:text-gray-400 hover:text-black dark:hover:text-white underline transition-colors cursor-pointer bg-transparent border-none p-0"
-            >
-              Abmelden
-            </button>
-          </form>
-        )}
       </div>
     </div>
   )
