@@ -1,7 +1,8 @@
 "use client"
 
 import { useState } from "react"
-import { setIdentity, updateColor, clearIdentity } from "../actions/identity"
+import { setIdentity, updateProfile, clearIdentity } from "../actions/identity"
+import { MAX_NAME_LENGTH } from "../../lib/constants"
 
 export const COLORS = [
   "#FFB3BA",
@@ -25,88 +26,104 @@ export const COLORS = [
 type Props = {
   person?: string
   currentColor?: string
+  onClose?: () => void
 }
 
-export default function IdentityForm({ person, currentColor }: Props) {
+export default function IdentityForm({ person, currentColor, onClose }: Props) {
   const [selectedColor, setSelectedColor] = useState(currentColor ?? COLORS[0])
-  const [name, setName] = useState("")
+  const [name, setName] = useState(person ?? "")
+  const [saveError, setSaveError] = useState("")
 
   const isExisting = !!person
-  const previewName = isExisting ? person : name || "Vorschau"
+  const previewName = name || "Vorschau"
+
+  async function handleSave(formData: FormData) {
+    const result = await updateProfile(formData)
+    if (result?.error) setSaveError(result.error)
+  }
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-white dark:bg-black text-black dark:text-white">
-      <div className="border-2 border-black dark:border-white p-8 w-full max-w-sm flex flex-col gap-6">
+    <div className="border-2 border-black dark:border-white bg-white dark:bg-black text-black dark:text-white p-8 w-full max-w-sm flex flex-col gap-6">
+      <div className="flex items-center justify-between">
         <h1 className="font-mono font-bold text-2xl">
-          {isExisting ? "Farbe ändern" : "Wer bist du?"}
+          {isExisting ? "Einstellungen" : "Wer bist du?"}
         </h1>
+        {onClose && (
+          <button
+            onClick={onClose}
+            className="font-mono text-2xl leading-none hover:opacity-50 transition-opacity cursor-pointer"
+          >
+            ×
+          </button>
+        )}
+      </div>
 
-        {isExisting && (
-          <div className="flex items-center justify-between">
-            <div>
-              <p className="font-mono text-sm text-gray-500 dark:text-gray-400">Eingeloggt als</p>
-              <p className="font-mono font-bold text-lg">{person}</p>
-            </div>
-            <form action={clearIdentity}>
-              <button
-                type="submit"
-                className="font-mono text-xs text-red-400 border border-red-400 px-2 py-0.5 hover:bg-red-400 hover:text-white transition-colors cursor-pointer"
-              >
-                Abmelden
-              </button>
-            </form>
-          </div>
+      <form action={isExisting ? handleSave : setIdentity} className="flex flex-col gap-5">
+        <div className="flex flex-col gap-1">
+          <input
+            type="text"
+            name={isExisting ? "newName" : "person"}
+            required
+            placeholder="Dein Name"
+            value={name}
+            onChange={(e) => { setName(e.target.value); setSaveError("") }}
+            maxLength={MAX_NAME_LENGTH}
+            className="border border-black dark:border-white bg-white dark:bg-black text-black dark:text-white font-mono px-3 py-2 w-full focus:outline-none focus:ring-1 focus:ring-black dark:focus:ring-white placeholder:text-gray-400"
+          />
+          {isExisting && (
+            <p className="font-mono text-xs text-gray-400 dark:text-gray-500">
+              Eingeloggt als {person}
+            </p>
+          )}
+        </div>
+
+        <div className="flex gap-2 flex-wrap">
+          {COLORS.map((color) => (
+            <button
+              key={color}
+              type="button"
+              onClick={() => setSelectedColor(color)}
+              style={{ backgroundColor: color }}
+              className={`w-8 h-8 transition-transform cursor-pointer ${
+                selectedColor === color
+                  ? "shadow-[inset_0_0_0_3px_black] scale-110"
+                  : ""
+              }`}
+            />
+          ))}
+        </div>
+
+        <div
+          className="font-mono text-xs px-3 py-1 self-start font-bold text-black"
+          style={{ backgroundColor: selectedColor }}
+        >
+          {previewName}
+        </div>
+
+        <input type="hidden" name="color" value={selectedColor} />
+
+        {saveError && (
+          <p className="font-mono text-xs text-red-400">{saveError}</p>
         )}
 
-        <form action={isExisting ? updateColor : setIdentity} className="flex flex-col gap-5">
-          {!isExisting && (
-            <input
-              type="text"
-              name="person"
-              required
-              placeholder="Dein Name"
-              value={name}
-              onChange={(e) => setName(e.target.value)}
-              className="border border-black dark:border-white bg-white dark:bg-black text-black dark:text-white font-mono px-3 py-2 w-full focus:outline-none focus:ring-1 focus:ring-black dark:focus:ring-white placeholder:text-gray-400"
-            />
-          )}
+        <button
+          type="submit"
+          className="border border-black dark:border-white font-mono px-4 py-2 hover:bg-black hover:text-white dark:hover:bg-white dark:hover:text-black transition-colors cursor-pointer"
+        >
+          {isExisting ? "Speichern →" : "Weiter →"}
+        </button>
+      </form>
 
-          <div className="flex flex-col gap-2">
-            <div className="flex gap-2 flex-wrap">
-              {COLORS.map((color) => (
-                <button
-                  key={color}
-                  type="button"
-                  onClick={() => setSelectedColor(color)}
-                  style={{ backgroundColor: color }}
-                  className={`w-8 h-8 border-2 transition-transform cursor-pointer ${
-                    selectedColor === color
-                      ? "border-black scale-110"
-                      : "border-transparent"
-                  }`}
-                />
-              ))}
-            </div>
-          </div>
-
-          <div
-            className="font-mono text-xs px-3 py-1 self-start font-bold text-black"
-            style={{ backgroundColor: selectedColor }}
-          >
-            {previewName}
-          </div>
-
-          <input type="hidden" name="color" value={selectedColor} />
-
+      {isExisting && (
+        <form action={clearIdentity} className="-mt-4">
           <button
             type="submit"
-            className="border border-black dark:border-white font-mono px-4 py-2 hover:bg-black hover:text-white dark:hover:bg-white dark:hover:text-black transition-colors cursor-pointer"
+            className="w-full border border-red-400 text-red-400 font-mono px-4 py-2 hover:bg-red-400 hover:text-white transition-colors cursor-pointer"
           >
-            {isExisting ? "Speichern →" : "Weiter →"}
+            Abmelden
           </button>
         </form>
-
-      </div>
+      )}
     </div>
   )
 }

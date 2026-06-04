@@ -3,11 +3,12 @@
 import { cookies } from "next/headers"
 import { redirect } from "next/navigation"
 import { prisma } from "../../lib/prisma"
+import { PERSON_COOKIE_NAME, MAX_NAME_LENGTH } from "../../lib/constants"
 
 export async function setIdentity(formData: FormData) {
   const person = (formData.get("person") as string)?.trim()
   const color = formData.get("color") as string
-  if (!person || !color) return
+  if (!person || !color || person.length > MAX_NAME_LENGTH) return
 
   await prisma.person.upsert({
     where: { name: person },
@@ -16,7 +17,7 @@ export async function setIdentity(formData: FormData) {
   })
 
   const cookieStore = await cookies()
-  cookieStore.set("officeZeitPerson", person, {
+  cookieStore.set(PERSON_COOKIE_NAME, person, {
     httpOnly: true,
     maxAge: 60 * 60 * 24 * 365,
   })
@@ -24,22 +25,32 @@ export async function setIdentity(formData: FormData) {
   redirect("/")
 }
 
-export async function updateColor(formData: FormData) {
+export async function updateProfile(formData: FormData): Promise<{ error: string } | void> {
+  const newName = (formData.get("newName") as string)?.trim()
   const color = formData.get("color") as string
   const cookieStore = await cookies()
-  const person = cookieStore.get("officeZeitPerson")?.value
-  if (!person || !color) return
+  const oldName = cookieStore.get(PERSON_COOKIE_NAME)?.value
+  if (!oldName || !newName || !color || newName.length > MAX_NAME_LENGTH) return
 
-  await prisma.person.update({
-    where: { name: person },
-    data: { color },
-  })
+  if (newName !== oldName) {
+    const existing = await prisma.person.findUnique({ where: { name: newName } })
+    if (existing) return { error: "Name bereits vergeben" }
+
+    await prisma.$transaction([
+      prisma.presence.updateMany({ where: { person: oldName }, data: { person: newName } }),
+      prisma.person.update({ where: { name: oldName }, data: { name: newName, color } }),
+    ])
+
+    cookieStore.set(PERSON_COOKIE_NAME, newName, { httpOnly: true, maxAge: 60 * 60 * 24 * 365 })
+  } else {
+    await prisma.person.update({ where: { name: oldName }, data: { color } })
+  }
 
   redirect("/")
 }
 
 export async function clearIdentity() {
   const cookieStore = await cookies()
-  cookieStore.delete("officeZeitPerson")
+  cookieStore.delete(PERSON_COOKIE_NAME)
   redirect("/")
 }
