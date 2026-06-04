@@ -11,7 +11,9 @@ export default async function ColorPage() {
 
   const personData = await prisma.person.findUnique({ where: { name: person } })
 
-  if (!personData) redirect("/")
+  if (!personData) {
+    redirect("/api/logout")
+  }
 
   return <ColorPicker person={person} currentColor={personData.color} />
 }

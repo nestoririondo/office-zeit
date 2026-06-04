@@ -1,4 +1,5 @@
 import { cookies } from "next/headers"
+import { redirect } from "next/navigation"
 import Link from "next/link"
 import NamePicker from "./components/NamePicker"
 import WeekView from "./components/WeekView"
@@ -22,6 +23,10 @@ export default async function Home({ searchParams }: Props) {
   const weekOffset = params.week !== undefined ? parseInt(params.week) : 0
 
   const personData = await prisma.person.findUnique({ where: { name: person } })
+
+  if (!personData) {
+    redirect("/api/logout")
+  }
 
   return (
     <main className="p-8 flex flex-col gap-8">
