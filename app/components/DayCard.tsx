@@ -39,8 +39,8 @@ export default function DayCard({ day, presences, currentPerson, colorMap, holid
         type="submit"
         className={`${cardBase} cursor-pointer transition-colors ${
           isPresent
-            ? "border-2 border-black dark:border-white bg-black dark:bg-white text-white dark:text-black"
-            : "border border-gray-300 dark:border-gray-700 bg-white dark:bg-black hover:bg-gray-100 dark:hover:bg-gray-900"
+            ? "border-2 border-black dark:border-white bg-black dark:bg-white text-white dark:text-black [&:not(:has([data-chip]:hover))]:hover:[box-shadow:inset_0_0_0_999px_rgba(220,38,38,0.12)]"
+            : "border border-gray-300 dark:border-gray-700 bg-white dark:bg-black [&:not(:has([data-chip]:hover))]:hover:bg-green-50 dark:[&:not(:has([data-chip]:hover))]:hover:bg-green-950"
         }`}
       >
         <div className="font-mono font-black text-5xl leading-none">{day.label}</div>

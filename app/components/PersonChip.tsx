@@ -22,20 +22,16 @@ export default function PersonChip({
   dimmed, exiting, darkBackground, isOwn, date
 }: Props) {
   const [popupOpen, setPopupOpen] = useState(false)
-  const [animKey, setAnimKey] = useState(0)
   const [, startTransition] = useTransition()
 
-  const hasEmoji = withDog || late || withBeer || withCake
   const animation = exiting
     ? "chip-out 0.2s ease-in forwards"
-    : hasEmoji
-      ? "chip-dog-in 0.32s cubic-bezier(0.34, 1.56, 0.64, 1) both"
-      : "chip-in 0.22s cubic-bezier(0.34, 1.56, 0.64, 1) both"
+    : "chip-in 0.22s cubic-bezier(0.34, 1.56, 0.64, 1) both"
 
   function handleChipClick(e: React.MouseEvent) {
-    if (!isOwn || !date) return
     e.preventDefault()
     e.stopPropagation()
+    if (!isOwn || !date) return
     setPopupOpen((prev) => !prev)
   }
 
@@ -43,7 +39,6 @@ export default function PersonChip({
     e.preventDefault()
     e.stopPropagation()
     setPopupOpen(false)
-    setAnimKey((k) => k + 1)
     startTransition(action)
   }
 
@@ -56,7 +51,7 @@ export default function PersonChip({
 
   return (
     <span
-      key={animKey}
+      data-chip
       onClick={handleChipClick}
       style={{
         backgroundColor: color,
@@ -68,33 +63,33 @@ export default function PersonChip({
         transform: "rotate(-1.5deg)",
         cursor: isOwn ? "pointer" : "default",
       }}
-      className={`relative inline-flex items-center justify-center font-mono text-xs font-bold min-w-20 min-h-20 p-2 text-center transition-opacity ${dimmed ? "opacity-60" : "opacity-100"}`}
+      className={`relative inline-flex items-center justify-center font-mono text-xs font-bold min-w-20 min-h-20 p-2 text-center transition-opacity ${dimmed ? "opacity-60" : "opacity-100"} ${isOwn ? "hover:brightness-125" : ""}`}
     >
       {popupOpen && isOwn ? (
-        <span className="grid grid-cols-2 gap-3">
+        <span className="grid grid-cols-2 gap-2">
           <span
             role="button"
             tabIndex={0}
             onClick={(e) => handle(e, () => toggleDog(person, date!))}
-            className={`text-xl leading-none transition-opacity ${withDog ? "opacity-100" : "opacity-30"}`}
+            className={`text-xl leading-none transition-opacity border border-transparent hover:border-black/30 p-0.5 ${withDog ? "opacity-100" : "opacity-30"}`}
           >🐶</span>
           <span
             role="button"
             tabIndex={0}
             onClick={(e) => handle(e, () => toggleBeer(person, date!))}
-            className={`text-xl leading-none transition-opacity ${withBeer ? "opacity-100" : "opacity-30"}`}
+            className={`text-xl leading-none transition-opacity border border-transparent hover:border-black/30 p-0.5 ${withBeer ? "opacity-100" : "opacity-30"}`}
           >🍺</span>
           <span
             role="button"
             tabIndex={0}
             onClick={(e) => handle(e, () => toggleLate(person, date!))}
-            className={`text-xl leading-none transition-opacity ${late ? "opacity-100" : "opacity-30"}`}
+            className={`text-xl leading-none transition-opacity border border-transparent hover:border-black/30 p-0.5 ${late ? "opacity-100" : "opacity-30"}`}
           >⏰</span>
           <span
             role="button"
             tabIndex={0}
             onClick={(e) => handle(e, () => toggleCake(person, date!))}
-            className={`text-xl leading-none transition-opacity ${withCake ? "opacity-100" : "opacity-30"}`}
+            className={`text-xl leading-none transition-opacity border border-transparent hover:border-black/30 p-0.5 ${withCake ? "opacity-100" : "opacity-30"}`}
           >🎂</span>
         </span>
       ) : (
@@ -102,7 +97,9 @@ export default function PersonChip({
           <span>{person}</span>
           {activeEmojis.length > 0 && (
             <span className="flex gap-0.5 text-base leading-none">
-              {activeEmojis.map((e) => <span key={e as string}>{e}</span>)}
+              {activeEmojis.map((e) => (
+                <span key={e as string} style={{ animation: "emoji-in 0.2s ease-out both" }}>{e}</span>
+              ))}
             </span>
           )}
         </span>
