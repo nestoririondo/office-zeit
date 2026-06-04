@@ -17,6 +17,7 @@ model Presence {
   person    String
   date      String
   withDog   Boolean  @default(false)
+  late      Boolean  @default(false)
   createdAt DateTime @default(now())
 
   @@unique([person, date])
