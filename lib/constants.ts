@@ -2,20 +2,20 @@ export const PERSON_COOKIE_NAME = "officeZeitPerson"
 export const MAX_NAME_LENGTH = 20
 
 export const COLORS = [
-  "#FFB3BA",
-  "#FF9AA2",
-  "#FFDAC1",
-  "#FFD580",
-  "#FDFD96",
-  "#C7F2A4",
-  "#B5EAD7",
-  "#A8E6E2",
-  "#C7CEEA",
-  "#B5C8F0",
-  "#E2C4F0",
-  "#F2D7EE",
-  "#D4A5A5",
-  "#F0E6C8",
-  "#C8E6C9",
-  "#B2EBF2",
+  "#E06060", // Rot
+  "#D96840", // Ziegelrot
+  "#D48030", // Orange
+  "#C8A820", // Bernstein
+  "#D4D020", // Gelb
+  "#B8BE20", // Gelbgrün
+  "#78B840", // Hellgrün
+  "#40A868", // Grün
+  "#30A898", // Blaugrün
+  "#50A8D0", // Himmelblau
+  "#7088D0", // Kornblume
+  "#9878CC", // Lavendel
+  "#B060C0", // Violett
+  "#C870C0", // Magenta
+  "#D06090", // Pink
+  "#D87070", // Altrosa
 ]

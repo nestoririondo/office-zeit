@@ -1,35 +1,56 @@
-"use client"
+"use client";
 
-import { useState, useEffect } from "react"
-import PersonChip from "./PersonChip"
+import { useState, useEffect } from "react";
+import PersonChip from "./PersonChip";
 
-type Presence = { person: string; withDog: boolean }
+type Presence = { person: string; withDog: boolean };
 
 type Props = {
-  presences: Presence[]
-  currentPerson: string
-  colorMap: Record<string, string>
-}
+  presences: Presence[];
+  currentPerson: string;
+  colorMap: Record<string, string>;
+  darkBackground?: boolean;
+};
 
-export default function PresenceList({ presences, currentPerson, colorMap }: Props) {
-  const [chips, setChips] = useState<(Presence & { exiting?: boolean })[]>(presences)
+export default function PresenceList({
+  presences,
+  currentPerson,
+  colorMap,
+  darkBackground,
+}: Props) {
+  const [chips, setChips] =
+    useState<(Presence & { exiting?: boolean })[]>(presences);
+  const [isDarkMode, setIsDarkMode] = useState(
+    () => typeof window !== "undefined" && window.matchMedia("(prefers-color-scheme: dark)").matches
+  );
 
   useEffect(() => {
-    const incoming = new Set(presences.map((p) => p.person))
-    const toExit = chips.filter((c) => !c.exiting && !incoming.has(c.person))
+    const mq = window.matchMedia("(prefers-color-scheme: dark)");
+    const handler = (e: MediaQueryListEvent) => setIsDarkMode(e.matches);
+    mq.addEventListener("change", handler);
+    return () => mq.removeEventListener("change", handler);
+  }, []);
 
-    if (toExit.length === 0) {
-      setChips(presences)
-      return
-    }
+  useEffect(() => {
+    const incoming = new Set(presences.map((p) => p.person));
 
-    setChips((prev) =>
-      prev.map((c) => (toExit.some((e) => e.person === c.person) ? { ...c, exiting: true } : c))
-    )
+    const exitTimer = setTimeout(() => {
+      setChips((prev) => {
+        const toExit = prev.filter((c) => !c.exiting && !incoming.has(c.person));
+        if (toExit.length === 0) return presences;
+        return prev.map((c) =>
+          toExit.some((e) => e.person === c.person) ? { ...c, exiting: true } : c,
+        );
+      });
+    }, 0);
 
-    const timer = setTimeout(() => setChips(presences), 220)
-    return () => clearTimeout(timer)
-  }, [presences])
+    const timer = setTimeout(() => setChips(() => presences), 220);
+
+    return () => {
+      clearTimeout(exitTimer);
+      clearTimeout(timer);
+    };
+  }, [presences]);
 
   return (
     <>
@@ -41,8 +62,9 @@ export default function PresenceList({ presences, currentPerson, colorMap }: Pro
           withDog={withDog}
           dimmed={person !== currentPerson}
           exiting={exiting}
+          darkBackground={isDarkMode ? !darkBackground : darkBackground}
         />
       ))}
     </>
-  )
+  );
 }
