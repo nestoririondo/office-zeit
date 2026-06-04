@@ -22,7 +22,7 @@ export default async function WeekView({ weekOffset, currentPerson }: Props) {
   const colorMap = Object.fromEntries(persons.map((p) => [p.name, p.color]))
 
   return (
-    <div className="flex flex-col sm:flex-row gap-px bg-black dark:bg-white border border-black dark:border-white">
+    <div className="flex flex-col sm:flex-row gap-px bg-black dark:bg-white border border-black dark:border-white overflow-x-auto">
       {days.map((day) => {
         const dayPresences = presences
           .filter((p) => p.date === day.date)

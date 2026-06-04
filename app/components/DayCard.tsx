@@ -15,7 +15,7 @@ type Props = {
   holiday?: string
 }
 
-const cardBase = "w-full h-full text-left min-h-48 p-4 flex flex-col gap-2"
+const cardBase = "w-full h-full text-left min-h-48 min-w-36 p-4 flex flex-col gap-2"
 
 export default function DayCard({ day, presences, currentPerson, colorMap, holiday }: Props) {
   const isPresent = presences.some((p) => p.person === currentPerson)
@@ -43,7 +43,7 @@ export default function DayCard({ day, presences, currentPerson, colorMap, holid
         <div className="font-mono font-bold text-lg">{day.label}</div>
         <div className="font-mono text-sm text-gray-500 dark:text-gray-400">{day.displayDate}</div>
 
-        <div className="flex flex-wrap gap-1 mt-2 flex-1">
+        <div className="flex flex-wrap gap-2 mt-2 flex-1">
           <PresenceList presences={presences} currentPerson={currentPerson} colorMap={colorMap} />
         </div>
       </button>

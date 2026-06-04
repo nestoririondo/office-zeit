@@ -15,10 +15,18 @@ export default function PersonChip({ person, color, withDog, dimmed, exiting }: 
 
   return (
     <span
-      style={{ backgroundColor: color, color: "#000", animation }}
-      className={`font-mono text-xs px-2 py-1 font-bold transition-opacity ${dimmed ? "opacity-60" : "opacity-100"}`}
+      style={{
+        backgroundColor: color,
+        color: "#000",
+        animation,
+        boxShadow: "2px 2px 0 rgba(0,0,0,0.5)",
+      }}
+      className={`inline-flex items-center justify-center font-mono text-xs font-bold min-w-[5rem] min-h-20 max-h-20 p-2 text-center transition-opacity ${dimmed ? "opacity-60" : "opacity-100"}`}
     >
-      {person}{withDog ? " 🐶" : ""}
+      <span className="flex flex-col items-center leading-tight">
+        <span>{person}</span>
+        {withDog && <span>🐶</span>}
+      </span>
     </span>
   )
 }
