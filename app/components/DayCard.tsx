@@ -5,6 +5,9 @@ import PresenceList from "./PresenceList"
 type Presence = {
   person: string
   withDog: boolean
+  late: boolean
+  withBeer: boolean
+  withCake: boolean
 }
 
 type Props = {
@@ -44,7 +47,7 @@ export default function DayCard({ day, presences, currentPerson, colorMap, holid
         <div className={`font-mono text-xs ${isPresent ? "text-gray-400 dark:text-gray-600" : "text-gray-500 dark:text-gray-400"}`}>{day.displayDate}</div>
 
         <div className="flex flex-wrap gap-2 mt-auto pt-4">
-          <PresenceList presences={presences} currentPerson={currentPerson} colorMap={colorMap} darkBackground={isPresent} />
+          <PresenceList presences={presences} currentPerson={currentPerson} colorMap={colorMap} darkBackground={isPresent} date={day.date} />
         </div>
       </button>
     </form>

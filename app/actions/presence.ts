@@ -36,13 +36,34 @@ export async function toggleLate(person: string, date: string) {
   const existing = await prisma.presence.findUnique({
     where: { person_date: { person, date } },
   })
-
   if (!existing) return
-
   await prisma.presence.update({
     where: { id: existing.id },
     data: { late: !existing.late },
   })
+  revalidatePath("/")
+}
 
+export async function toggleBeer(person: string, date: string) {
+  const existing = await prisma.presence.findUnique({
+    where: { person_date: { person, date } },
+  })
+  if (!existing) return
+  await prisma.presence.update({
+    where: { id: existing.id },
+    data: { withBeer: !existing.withBeer },
+  })
+  revalidatePath("/")
+}
+
+export async function toggleCake(person: string, date: string) {
+  const existing = await prisma.presence.findUnique({
+    where: { person_date: { person, date } },
+  })
+  if (!existing) return
+  await prisma.presence.update({
+    where: { id: existing.id },
+    data: { withCake: !existing.withCake },
+  })
   revalidatePath("/")
 }

@@ -26,7 +26,7 @@ export default async function WeekView({ weekOffset, currentPerson }: Props) {
       {days.map((day) => {
         const dayPresences = presences
           .filter((p) => p.date === day.date)
-          .map((p) => ({ person: p.person, withDog: p.withDog }))
+          .map((p) => ({ person: p.person, withDog: p.withDog, late: p.late, withBeer: p.withBeer, withCake: p.withCake }))
 
         return (
           <DayCard

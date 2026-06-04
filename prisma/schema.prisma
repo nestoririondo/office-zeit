@@ -18,6 +18,8 @@ model Presence {
   date      String
   withDog   Boolean  @default(false)
   late      Boolean  @default(false)
+  withBeer  Boolean  @default(false)
+  withCake  Boolean  @default(false)
   createdAt DateTime @default(now())
 
   @@unique([person, date])

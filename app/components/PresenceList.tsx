@@ -3,13 +3,14 @@
 import { useState, useEffect } from "react";
 import PersonChip from "./PersonChip";
 
-type Presence = { person: string; withDog: boolean };
+type Presence = { person: string; withDog: boolean; late: boolean; withBeer: boolean; withCake: boolean };
 
 type Props = {
   presences: Presence[];
   currentPerson: string;
   colorMap: Record<string, string>;
   darkBackground?: boolean;
+  date: string;
 };
 
 export default function PresenceList({
@@ -17,17 +18,18 @@ export default function PresenceList({
   currentPerson,
   colorMap,
   darkBackground,
+  date,
 }: Props) {
   const [chips, setChips] =
     useState<(Presence & { exiting?: boolean })[]>(presences);
-  const [isDarkMode, setIsDarkMode] = useState(
-    () => typeof window !== "undefined" && window.matchMedia("(prefers-color-scheme: dark)").matches
-  );
+
+  const [isDarkMode, setIsDarkMode] = useState(false);
 
   useEffect(() => {
     const mq = window.matchMedia("(prefers-color-scheme: dark)");
     const handler = (e: MediaQueryListEvent) => setIsDarkMode(e.matches);
     mq.addEventListener("change", handler);
+    handler({ matches: mq.matches } as MediaQueryListEvent);
     return () => mq.removeEventListener("change", handler);
   }, []);
 
@@ -54,15 +56,20 @@ export default function PresenceList({
 
   return (
     <>
-      {chips.map(({ person, withDog, exiting }) => (
+      {chips.map(({ person, withDog, late, withBeer, withCake, exiting }) => (
         <PersonChip
           key={person}
           person={person}
           color={colorMap[person] ?? "#e5e7eb"}
           withDog={withDog}
+          late={late}
+          withBeer={withBeer}
+          withCake={withCake}
           dimmed={person !== currentPerson}
           exiting={exiting}
           darkBackground={isDarkMode ? !darkBackground : darkBackground}
+          isOwn={person === currentPerson}
+          date={date}
         />
       ))}
     </>
