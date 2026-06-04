@@ -1,5 +1,6 @@
 import { getWeekDays } from "../../lib/dates"
 import { prisma } from "../../lib/prisma"
+import { getHolidays } from "../../lib/holidays"
 import DayCard from "./DayCard"
 
 type Props = {
@@ -10,6 +11,8 @@ type Props = {
 export default async function WeekView({ weekOffset, currentPerson }: Props) {
   const days = getWeekDays(weekOffset)
   const dates = days.map((d) => d.date)
+  const year = new Date(dates[0]).getFullYear()
+  const holidays = getHolidays(year)
 
   const [presences, persons] = await Promise.all([
     prisma.presence.findMany({ where: { date: { in: dates } } }),
@@ -32,6 +35,7 @@ export default async function WeekView({ weekOffset, currentPerson }: Props) {
             presences={dayPresences}
             currentPerson={currentPerson}
             colorMap={colorMap}
+            holiday={holidays.get(day.date)}
           />
         )
       })}
