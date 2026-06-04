@@ -37,3 +37,9 @@ export async function updateColor(formData: FormData) {
 
   redirect("/")
 }
+
+export async function clearIdentity() {
+  const cookieStore = await cookies()
+  cookieStore.delete("officeZeitPerson")
+  redirect("/")
+}

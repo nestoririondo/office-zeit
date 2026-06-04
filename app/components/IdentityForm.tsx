@@ -1,7 +1,7 @@
 "use client"
 
 import { useState } from "react"
-import { setIdentity, updateColor } from "../actions/identity"
+import { setIdentity, updateColor, clearIdentity } from "../actions/identity"
 
 export const COLORS = [
   "#FFB3BA",
@@ -93,6 +93,17 @@ export default function IdentityForm({ person, currentColor }: Props) {
             {isExisting ? "Speichern →" : "Weiter →"}
           </button>
         </form>
+
+        {isExisting && (
+          <form action={clearIdentity}>
+            <button
+              type="submit"
+              className="font-mono text-sm text-gray-500 dark:text-gray-400 hover:text-black dark:hover:text-white underline transition-colors cursor-pointer bg-transparent border-none p-0"
+            >
+              Abmelden
+            </button>
+          </form>
+        )}
       </div>
     </div>
   )
