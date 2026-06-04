@@ -2,7 +2,7 @@
 
 import { useState } from "react"
 import SettingsModal from "./SettingsModal"
-import IdentityForm from "./IdentityForm"
+import SettingsForm from "./SettingsForm"
 
 type Props = {
   person: string
@@ -29,7 +29,7 @@ export default function SettingsButton({ person, color }: Props) {
 
       {open && (
         <SettingsModal onClose={() => setOpen(false)}>
-          <IdentityForm person={person} currentColor={color} onClose={() => setOpen(false)} />
+          <SettingsForm person={person} currentColor={color} onClose={() => setOpen(false)} />
         </SettingsModal>
       )}
     </>

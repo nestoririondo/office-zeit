@@ -25,6 +25,24 @@ export async function setIdentity(formData: FormData) {
   redirect("/")
 }
 
+async function applyRename(
+  oldName: string,
+  newName: string,
+  color: string,
+  cookieStore: Awaited<ReturnType<typeof cookies>>
+): Promise<{ error: string } | null> {
+  const existing = await prisma.person.findUnique({ where: { name: newName } })
+  if (existing) return { error: "Name bereits vergeben" }
+
+  await prisma.$transaction([
+    prisma.presence.updateMany({ where: { person: oldName }, data: { person: newName } }),
+    prisma.person.update({ where: { name: oldName }, data: { name: newName, color } }),
+  ])
+
+  cookieStore.set(PERSON_COOKIE_NAME, newName, { httpOnly: true, maxAge: 60 * 60 * 24 * 365 })
+  return null
+}
+
 export async function updateProfile(formData: FormData): Promise<{ error: string } | void> {
   const newName = (formData.get("newName") as string)?.trim()
   const color = formData.get("color") as string
@@ -33,15 +51,8 @@ export async function updateProfile(formData: FormData): Promise<{ error: string
   if (!oldName || !newName || !color || newName.length > MAX_NAME_LENGTH) return
 
   if (newName !== oldName) {
-    const existing = await prisma.person.findUnique({ where: { name: newName } })
-    if (existing) return { error: "Name bereits vergeben" }
-
-    await prisma.$transaction([
-      prisma.presence.updateMany({ where: { person: oldName }, data: { person: newName } }),
-      prisma.person.update({ where: { name: oldName }, data: { name: newName, color } }),
-    ])
-
-    cookieStore.set(PERSON_COOKIE_NAME, newName, { httpOnly: true, maxAge: 60 * 60 * 24 * 365 })
+    const renameError = await applyRename(oldName, newName, color, cookieStore)
+    if (renameError) return renameError
   } else {
     await prisma.person.update({ where: { name: oldName }, data: { color } })
   }
