@@ -57,7 +57,7 @@ export default function SettingsForm({ person, currentColor, onClose }: Props) {
               onClick={() => setSelectedColor(color)}
               style={{ backgroundColor: color }}
               className={`w-8 h-8 transition-transform cursor-pointer ${
-                selectedColor === color ? "shadow-[inset_0_0_0_3px_black] scale-110" : ""
+                selectedColor === color ? "outline outline-[3px] outline-black dark:outline-white -outline-offset-[3px] scale-110" : ""
               }`}
             />
           ))}
