@@ -78,31 +78,28 @@ export default function PersonChip({
       {...(popupOpen ? { "data-popup-open": true } : {})}
     >
       {popupOpen && isOwn ? (
-        <span className="grid grid-cols-2 gap-2">
-          <span
-            role="button"
-            tabIndex={0}
-            onClick={(e) => handle(e, () => toggleDog(person, date!))}
-            className={`text-xl leading-none transition-opacity border border-transparent hover:border-black/30 p-0.5 ${withDog ? "opacity-100" : "opacity-30"}`}
-          >🐶</span>
-          <span
-            role="button"
-            tabIndex={0}
-            onClick={(e) => handle(e, () => toggleBeer(person, date!))}
-            className={`text-xl leading-none transition-opacity border border-transparent hover:border-black/30 p-0.5 ${withBeer ? "opacity-100" : "opacity-30"}`}
-          >🍺</span>
-          <span
-            role="button"
-            tabIndex={0}
-            onClick={(e) => handle(e, () => toggleLate(person, date!))}
-            className={`text-xl leading-none transition-opacity border border-transparent hover:border-black/30 p-0.5 ${late ? "opacity-100" : "opacity-30"}`}
-          >⏰</span>
-          <span
-            role="button"
-            tabIndex={0}
-            onClick={(e) => handle(e, () => toggleCake(person, date!))}
-            className={`text-xl leading-none transition-opacity border border-transparent hover:border-black/30 p-0.5 ${withCake ? "opacity-100" : "opacity-30"}`}
-          >🎂</span>
+        <span className="grid grid-cols-2 gap-2" style={{ animation: "fade-in 0.2s cubic-bezier(0.34, 1.56, 0.64, 1) both" }}>
+          {([
+            { emoji: "🐶", active: withDog, action: () => toggleDog(person, date!) },
+            { emoji: "🍺", active: withBeer, action: () => toggleBeer(person, date!) },
+            { emoji: "⏰", active: late,     action: () => toggleLate(person, date!) },
+            { emoji: "🎂", active: withCake, action: () => toggleCake(person, date!) },
+          ] as const).map(({ emoji, active, action }) => (
+            <span
+              key={emoji}
+              role="button"
+              tabIndex={0}
+              onClick={(e) => handle(e, action)}
+              className={`relative group/emoji text-xl leading-none p-0.5 transition-opacity ${active ? "opacity-100" : "opacity-30 hover:opacity-100"}`}
+            >
+              {emoji}
+              {active && (
+                <span className="absolute inset-0 flex items-center justify-center opacity-0 group-hover/emoji:opacity-100 transition-opacity">
+                  <span className="w-6 h-6 flex items-center justify-center bg-black/50 text-white text-sm font-black leading-none" style={{ borderRadius: "50%" }}>✕</span>
+                </span>
+              )}
+            </span>
+          ))}
         </span>
       ) : (
         <span className="flex flex-col items-center leading-tight gap-0.5">
