@@ -22,6 +22,7 @@ export default function PersonChip({
   dimmed, exiting, darkBackground, isOwn, date
 }: Props) {
   const [popupOpen, setPopupOpen] = useState(false)
+  const [hovered, setHovered] = useState(false)
   const [, startTransition] = useTransition()
 
   const animation = exiting
@@ -50,20 +51,31 @@ export default function PersonChip({
   ].filter(Boolean)
 
   return (
+    <>
+    {popupOpen && (
+      <span
+        className="fixed inset-0 z-10"
+        onClick={(e) => { e.preventDefault(); e.stopPropagation(); setPopupOpen(false) }}
+      />
+    )}
     <span
       data-chip
       onClick={handleChipClick}
+      onMouseEnter={() => setHovered(true)}
+      onMouseLeave={() => setHovered(false)}
       style={{
         backgroundColor: color,
         color: "#000",
         animation,
         boxShadow: darkBackground
-          ? `2px 2px 0 rgba(255,255,255,${dimmed ? 0.3 : 0.65})`
-          : `2px 2px 0 rgba(0,0,0,${dimmed ? 0.12 : 0.3})`,
+          ? `${hovered && isOwn ? "4px 4px" : "2px 2px"} 0 rgba(255,255,255,${dimmed ? 0.3 : 0.65})`
+          : `${hovered && isOwn ? "4px 4px" : "2px 2px"} 0 rgba(0,0,0,${dimmed ? 0.12 : 0.3})`,
+        transition: "box-shadow 0.15s ease",
         transform: "rotate(-1.5deg)",
         cursor: isOwn ? "pointer" : "default",
       }}
-      className={`relative inline-flex items-center justify-center font-mono text-xs font-bold min-w-20 min-h-20 p-2 text-center transition-opacity ${dimmed ? "opacity-60" : "opacity-100"} ${isOwn ? "hover:brightness-125" : ""}`}
+      className={`relative inline-flex items-center justify-center font-mono text-xs font-bold min-w-20 min-h-20 p-2 text-center transition-opacity ${dimmed ? "opacity-60" : "opacity-100"} ${isOwn ? "hover:brightness-110" : ""} ${popupOpen ? "z-20" : ""}`}
+      {...(popupOpen ? { "data-popup-open": true } : {})}
     >
       {popupOpen && isOwn ? (
         <span className="grid grid-cols-2 gap-2">
@@ -105,5 +117,6 @@ export default function PersonChip({
         </span>
       )}
     </span>
+    </>
   )
 }
