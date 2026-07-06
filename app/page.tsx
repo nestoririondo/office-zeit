@@ -7,6 +7,7 @@ import Polling from "./components/Polling"
 import Header from "./components/Header"
 import { prisma } from "../lib/prisma"
 import { PERSON_COOKIE_NAME } from "../lib/constants"
+import { getDefaultWeekOffset } from "../lib/dates"
 
 type Props = {
   searchParams: Promise<{ week?: string }>
@@ -21,7 +22,8 @@ export default async function Home({ searchParams }: Props) {
   }
 
   const params = await searchParams
-  const weekOffset = params.week !== undefined ? parseInt(params.week) : 0
+  const weekOffset = params.week !== undefined ? parseInt(params.week) : getDefaultWeekOffset()
+  const isAutoSwitched = params.week === undefined && weekOffset === 1
 
   const personData = await prisma.person.findUnique({ where: { name: person } })
 
@@ -32,7 +34,7 @@ export default async function Home({ searchParams }: Props) {
   return (
     <main className="p-8 flex flex-col gap-8">
       <Header person={person} color={personData?.color ?? "#e5e7eb"} />
-      <WeekTabs activeOffset={weekOffset} />
+      <WeekTabs activeOffset={weekOffset} isAutoSwitched={isAutoSwitched} />
       <WeekView weekOffset={weekOffset} currentPerson={person} />
       <Polling />
     </main>

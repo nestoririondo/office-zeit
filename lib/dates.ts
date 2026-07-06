@@ -30,6 +30,11 @@ function toISODate(date: Date): string {
   return `${year}-${month}-${day}`
 }
 
+export function getDefaultWeekOffset(): number {
+  const day = new Date().getDay()
+  return day === 6 || day === 0 ? 1 : 0
+}
+
 export function getWeekDays(offsetWeeks: number = 0): WeekDay[] {
   const today = new Date()
   const monday = getMondayOf(today)
