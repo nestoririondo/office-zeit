@@ -16,7 +16,6 @@ type Props = {
   currentPerson: string;
   colorMap: Record<string, string>;
   holiday?: string;
-  isAdmin: boolean;
 };
 
 const cardBase =
@@ -28,7 +27,6 @@ export default function DayCard({
   currentPerson,
   colorMap,
   holiday,
-  isAdmin,
 }: Props) {
   const isPresent = presences.some((p) => p.person === currentPerson);
 
@@ -91,7 +89,6 @@ export default function DayCard({
             colorMap={colorMap}
             darkBackground={isPresent}
             date={day.date}
-            isAdmin={isAdmin}
           />
         </div>
       </button>

@@ -11,7 +11,6 @@ type Props = {
   colorMap: Record<string, string>;
   darkBackground?: boolean;
   date: string;
-  isAdmin: boolean;
 };
 
 export default function PresenceList({
@@ -20,7 +19,6 @@ export default function PresenceList({
   colorMap,
   darkBackground,
   date,
-  isAdmin,
 }: Props) {
   const [chips, setChips] =
     useState<(Presence & { exiting?: boolean })[]>(presences);
@@ -72,7 +70,6 @@ export default function PresenceList({
           darkBackground={isDarkMode ? !darkBackground : darkBackground}
           isOwn={person === currentPerson}
           date={date}
-          isAdmin={isAdmin}
         />
       ))}
     </>

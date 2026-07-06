@@ -6,10 +6,9 @@ import DayCard from "./DayCard"
 type Props = {
   weekOffset: number
   currentPerson: string
-  isAdmin: boolean
 }
 
-export default async function WeekView({ weekOffset, currentPerson, isAdmin }: Props) {
+export default async function WeekView({ weekOffset, currentPerson }: Props) {
   const days = getWeekDays(weekOffset)
   const dates = days.map((d) => d.date)
   const year = new Date(dates[0]).getFullYear()
@@ -37,7 +36,6 @@ export default async function WeekView({ weekOffset, currentPerson, isAdmin }: P
             currentPerson={currentPerson}
             colorMap={colorMap}
             holiday={holidays.get(day.date)}
-            isAdmin={isAdmin}
           />
         )
       })}

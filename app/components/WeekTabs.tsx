@@ -4,18 +4,11 @@ import Link from "next/link"
 
 type Props = {
   activeOffset: number
-  isAutoSwitched?: boolean
 }
 
-export default function WeekTabs({ activeOffset, isAutoSwitched }: Props) {
+export default function WeekTabs({ activeOffset }: Props) {
   return (
-    <div className="flex flex-col items-center gap-2">
-      {isAutoSwitched && (
-        <p className="font-mono text-xs text-center">
-          Wochenende: du siehst automatisch die nächste Woche.
-        </p>
-      )}
-      <div className="flex gap-px border border-black dark:border-white mx-auto w-fit">
+    <div className="flex gap-px border border-black dark:border-white mx-auto w-fit">
       <Link
         href="/?week=0"
         className={`font-mono text-sm px-4 py-2 ${
@@ -36,7 +29,6 @@ export default function WeekTabs({ activeOffset, isAutoSwitched }: Props) {
       >
         Nächste Woche
       </Link>
-      </div>
     </div>
   )
 }
