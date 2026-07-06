@@ -1,7 +1,21 @@
 "use server"
 
+import { cookies } from "next/headers"
 import { prisma } from "../../lib/prisma"
 import { revalidatePath } from "next/cache"
+import { PERSON_COOKIE_NAME } from "../../lib/constants"
+import { verifyCookieValue } from "../../lib/cookie-signing"
+
+export async function removePresence(person: string, date: string) {
+  const cookieStore = await cookies()
+  const raw = cookieStore.get(PERSON_COOKIE_NAME)?.value ?? ""
+  const currentPerson = verifyCookieValue(raw)
+  const admins = process.env.ADMIN_MEMBERS?.split(",") ?? []
+  if (!currentPerson || !admins.includes(currentPerson)) return
+
+  await prisma.presence.deleteMany({ where: { person, date } })
+  revalidatePath("/")
+}
 
 export async function togglePresence(person: string, date: string) {
   const existing = await prisma.presence.findUnique({

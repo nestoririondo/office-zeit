@@ -4,6 +4,7 @@ import { cookies } from "next/headers"
 import { redirect } from "next/navigation"
 import { prisma } from "../../lib/prisma"
 import { PERSON_COOKIE_NAME, MAX_NAME_LENGTH } from "../../lib/constants"
+import { signCookieValue } from "../../lib/cookie-signing"
 
 export async function setIdentity(formData: FormData) {
   const person = (formData.get("person") as string)?.trim()
@@ -17,7 +18,7 @@ export async function setIdentity(formData: FormData) {
   })
 
   const cookieStore = await cookies()
-  cookieStore.set(PERSON_COOKIE_NAME, person, {
+  cookieStore.set(PERSON_COOKIE_NAME, signCookieValue(person), {
     httpOnly: true,
     maxAge: 60 * 60 * 24 * 365,
   })
